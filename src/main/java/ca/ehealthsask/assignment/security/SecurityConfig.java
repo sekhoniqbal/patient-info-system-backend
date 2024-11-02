@@ -51,10 +51,11 @@ public class SecurityConfig {
 				.authorizeHttpRequests(
 						configurer -> configurer
 								.requestMatchers("/api/login").permitAll()
-								.anyRequest().authenticated()
-								)
-				.authenticationProvider(authenticationProvider())
-				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+								.requestMatchers("/swagger-ui/*", "/v3/api-docs", "/v3/api-docs/*").permitAll()
+								.anyRequest().authenticated())
+		.authenticationProvider(authenticationProvider())
+		.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+		;
 
 		return http.build();
 	}
