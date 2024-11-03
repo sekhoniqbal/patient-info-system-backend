@@ -1,9 +1,10 @@
-package ca.ehealthsask.assignment.api;
+package ca.ehealthsask.assignment.controllers;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,6 +55,7 @@ public class PatientController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_admin')")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void deletePatient(@PathVariable("id") Long id) {
         Patient patient = findPatientByIdOrElseThrowError(id);

@@ -24,8 +24,13 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String extractUsername(String token) throws JwtException {
-        return extractClaim(token, Claims::getSubject);
+    public String extractUsername(String token) {
+        try{
+            return extractClaim(token, Claims::getSubject);
+        }
+        catch(JwtException ex){
+            return null;
+        }
     }
 
     public Date extractExpirationDate(String token) throws JwtException {
@@ -37,7 +42,12 @@ public class JwtUtil {
     }
 
     public boolean isTokenValid(String token, String username) {
-        return !isTokenExpired(token) && extractUsername(token).equals(username);
+        try {
+            return !isTokenExpired(token) && extractUsername(token).equals(username);
+        }
+        catch(JwtException ex){
+            return false;
+        }
     }
 
     private boolean isTokenExpired(String token) throws JwtException {

@@ -1,4 +1,4 @@
-package ca.ehealthsask.assignment.api;
+package ca.ehealthsask.assignment.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import ca.ehealthsask.assignment.dtos.LoginRequest;
 import ca.ehealthsask.assignment.dtos.LoginResponse;
@@ -20,7 +21,7 @@ public class LoginController {
     private final JwtUtil jwtUtil;
     private final Integer jwtTtl;
 
-    public LoginController(AuthenticationManager authenticationManager, JwtUtil jwtUtil,
+    public LoginController(AuthenticationManager authenticationManager,  JwtUtil jwtUtil,
             @Value("${application.security.jwt-ttl}") Integer jwtTtl) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
@@ -35,12 +36,16 @@ public class LoginController {
         Authentication authentication = authenticationManager.authenticate(authToken);
 
         if (!authentication.isAuthenticated()) {
-            throw new UsernameNotFoundException("Failed to authenticate");
+            System.out.println("got here");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Incorrect username or password");
         }
         String token = jwtUtil.generate(request.getUsername(), jwtTtl);
         return new LoginResponse(
                 token,
                 jwtUtil.extractCreatedAt(token),
-                jwtUtil.extractExpirationDate(token));
+                jwtUtil.extractExpirationDate(token),
+                request.getUsername(),
+                authentication.getAuthorities().stream().findAny().map(grantedAuthority->grantedAuthority.toString().substring(5)).orElse("")
+                );
     }
 }
