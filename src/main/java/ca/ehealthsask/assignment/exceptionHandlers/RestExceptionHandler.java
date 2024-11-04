@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
 
 import lombok.Getter;
@@ -37,6 +38,14 @@ public class RestExceptionHandler {
     public Error handleValidationErrors(HttpMessageNotReadableException ex) {
 
         return new Error("Request payload must be valid json object");
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Error handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+
+        return new Error("invalid value supplied for "+ ex.getName().toString());
     }
 
     @ExceptionHandler(ResponseStatusException.class)
