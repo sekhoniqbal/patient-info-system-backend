@@ -74,6 +74,10 @@ For local development and for demonstration of the functionality of the system, 
 - each table has the unique id column as primary key.
 - each user has id, username, role, enabled, full name and password(only password hash is stored for security reasons) fields.
 - each patient has id, date of birth, first name and last name fields
+### SQL to create patient table
+`CREATE TABLE patient (id integer, date_of_birth date, first_name varchar(255), last_name varchar(255), primary key (id))`
+### SQl to create user table
+`CREATE TABLE user (id integer, enabled boolean not null, full_name varchar(50) not null, password varchar(120) not null, role varchar(20) not null, username varchar(30) not null unique, primary key (id))`
 
 ## Overview of API endpoints
 
